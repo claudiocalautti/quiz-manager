@@ -1,0 +1,7 @@
+.panel-invisible {
+	box-shadow: none;
+	border: none;
+}
+.input-group {
+	margin-bottom: 10px;
+}
