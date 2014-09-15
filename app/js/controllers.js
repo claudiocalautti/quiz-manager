@@ -6,50 +6,29 @@
 
 angular.module('QuizApp.controllers', [])
 
-	.controller('quizCtrl', ['validate', function (validate) {
+	.controller('managerCtrl', ['quiz', function (quiz) {
 
-		this.data = {
-			id: 0,
-			title: 'Quiz Name',
-			questions: [
-				// {
-				// 	id: 0,
-				// 	text: 'I ________________ from France.',
-				// 	answers: [
-				// 		{
-				// 			id: 0,
-				// 			text: 'is',
-				// 			correct: false
-				// 		},
-				// 		{
-				// 			id: 1,
-				// 			text: 'are',
-				// 			correct: false
-				// 		},
-				// 		{
-				// 			id: 2,
-				// 			text: 'am',
-				// 			correct: true
-				// 		},
-				// 		{
-				// 			id: 3,
-				// 			text: 'be',
-				// 			correct: false
-				// 		}
-				// 	],
-				// 	invalid: {
-				// 		question: false,
-				// 		answers: false
-				// 	},
-				// 	editing: false
-				// }
-			]
+		this.quiz = quiz;
+
+		this.addQuiz = function () {
+			var newQuiz = {
+				id: this.quiz.all.length,
+				name: this.quizTitle,
+				questions: []
+			}
+			this.quiz.all.push(newQuiz);
+			this.quizTitle = '';
 		}
 
-		this.warning = {
-			active: false,
-			message: ''
+		this.setQuiz = function (selectedQuiz) {
+			quiz.selected = selectedQuiz;
 		}
+
+	}])
+
+	.controller('builderCtrl', ['quiz','validate', function (quiz, validate) {
+
+		this.quiz = quiz;
 
 		this.addQuestion = function (questions) {
 			var question = {
@@ -74,6 +53,8 @@ angular.module('QuizApp.controllers', [])
 				correct: false
 			}
 			question.answers.push(answer);
+
+			console.log(this.quiz);
 		}
 
 		this.remove = function (arr, item) {
@@ -89,6 +70,10 @@ angular.module('QuizApp.controllers', [])
 			question.invalid.answers = (validAnswer !== true) ? validAnswer : false;
 
 			if (validQuestion === true && validAnswer === true) question.editing = false;
+		}
+
+		this.deleteQuiz = function () {
+			console.log('call api/delete');
 		}
 
 		this.saveQuiz = function () {

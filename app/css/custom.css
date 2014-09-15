@@ -11,3 +11,24 @@
 .no-m-b {
 	margin-bottom: 0;
 }
+.list-group-item {
+	cursor: pointer;
+}
+.list-group-item:hover {
+	background: #d9edf7;
+	color: #31708f;
+}
+.list-group-item .glyphicon {
+	display: none;
+}
+.list-group-item:hover .glyphicon {
+	display: block;
+}
+.list-group-item.selected {
+	background: #428bca;
+	color: #fff;
+	font-weight: bold;
+}
+.list-group-item.selected .glyphicon {
+	display: block;
+}

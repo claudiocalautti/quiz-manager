@@ -16,100 +16,136 @@
 </head>
 <body>
 
-	<div class="container" ng-controller="quizCtrl as quiz">
+	<div class="container">
 
 		<div class="page-header">
 			<h1><strong>Quiz Manager</strong></h1>
 		</div>
-
-		<div class="panel panel-primary">
-			<div class="panel-heading clearfix">
-				<h2 class="no-margin pull-left">{{ quiz.data.title }}</h2>
-			</div>
-
-			<div class="panel-body">
-
-				<div class="panel panel-invisible" ng-repeat="question in quiz.data.questions track by $index">
-					
-					<!-- question -->
-					<div class="input-group input-group-lg" ng-if="question.editing">
-						<span class="input-group-addon">
-							<strong>
-								Q:
-							</strong>
-						</span>
-						<input type="text" class="form-control" placeholder="Question..." ng-model="question.text">
-						<span class="input-group-btn">
-							<button class="btn btn-danger" type="button" ng-click="quiz.remove(quiz.data.questions, question)">
-								<span class="glyphicon glyphicon-remove"></span>
-								Remove
-							</button>
-						</span>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="panel panel-default" ng-controller="managerCtrl as manager">
+					<div class="panel-heading clearfix">
+						<h2 class="no-margin pull-left">Quizzes</h2>
 					</div>
-					<div class="input-group input-group-lg" ng-if="!question.editing">
-						<strong>
-							Q:
-						</strong>
-						{{ question.text }}
-					</div>
-					<div class="alert alert-warning no-m-b" role="alert" ng-if="question.invalid.question">
-						<strong>Warning!</strong> {{ question.invalid.question }}
-					</div>
-
-					<!-- answers -->
 					<div class="panel-body">
-						<div class="input-group" ng-if="question.editing" ng-repeat="answer in question.answers track by $index">
-							<span class="input-group-addon">
-								<input type="checkbox" ng-model="answer.correct">
-							</span>
-							<input type="text" class="form-control" placeholder="Answer..." ng-model="answer.text">
+						<div class="input-group no-m-b">
+							<input type="text" class="form-control" placeholder="Quiz name..." ng-model="manager.quizTitle">
 							<span class="input-group-btn">
-								<button class="btn btn-danger" type="button" ng-click="quiz.remove(question.answers, answer)">
-									<span class="glyphicon glyphicon-remove"></span>
-									Remove
+								<button type="button" class="btn btn-primary" ng-click="manager.addQuiz()" ng-disabled="!manager.quizTitle">
+									<span class="glyphicon glyphicon-plus"></span>
+									New Quiz
 								</button>
 							</span>
 						</div>
-						<div class="input-group" ng-if="!question.editing" ng-repeat="answer in question.answers track by $index">
-							<input type="radio" name="{{ question.id }}">
-							{{ answer.text }}
+					</div>
+					<ul class="list-group">
+						<li class="list-group-item"
+							ng-repeat="quiz in manager.quiz.all"
+							ng-click="manager.setQuiz(quiz)"
+							ng-class="{ 'selected': quiz.id == manager.quiz.selected.id }"
+							>
+							{{ quiz.name }}
+							<span class="glyphicon glyphicon-list-alt pull-right"></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-8" ng-controller="builderCtrl as builder">
+				<div class="panel panel-primary" ng-if="builder.quiz.selected">
+					<div class="panel-heading">
+						<h2 class="no-margin">{{ builder.quiz.selected.name }}</h2>
+					</div>
+
+					<div class="panel-body">
+
+						<div class="panel panel-invisible" ng-repeat="question in builder.quiz.selected.questions track by $index">
+							
+							<!-- question -->
+							<div class="input-group input-group-lg" ng-if="question.editing">
+								<span class="input-group-addon">
+									<strong>
+										Q:
+									</strong>
+								</span>
+								<input type="text" class="form-control" placeholder="Question..." ng-model="question.text">
+								<span class="input-group-btn">
+									<button class="btn btn-danger" type="button" ng-click="builder.remove(builder.quiz.selected.questions, question)">
+										<span class="glyphicon glyphicon-remove"></span>
+										Remove
+									</button>
+								</span>
+							</div>
+							<div class="input-group input-group-lg" ng-if="!question.editing">
+								<strong>
+									Q:
+								</strong>
+								{{ question.text }}
+							</div>
+							<div class="alert alert-warning no-m-b" role="alert" ng-if="question.invalid.question">
+								<strong>Warning!</strong> {{ question.invalid.question }}
+							</div>
+
+							<!-- answers -->
+							<div class="panel-body">
+								<div class="input-group" ng-if="question.editing" ng-repeat="answer in question.answers track by $index">
+									<span class="input-group-addon">
+										<input type="checkbox" ng-model="answer.correct">
+									</span>
+									<input type="text" class="form-control" placeholder="Answer..." ng-model="answer.text">
+									<span class="input-group-btn">
+										<button class="btn btn-danger" type="button" ng-click="builder.remove(question.answers, answer)">
+											<span class="glyphicon glyphicon-remove"></span>
+											Remove
+										</button>
+									</span>
+								</div>
+								<div class="input-group" ng-if="!question.editing" ng-repeat="answer in question.answers track by $index">
+									<input type="radio" name="{{ question.id }}">
+									{{ answer.text }}
+								</div>
+
+								<button type="button" class="btn btn-default btn-sm" ng-if="question.editing" ng-click="builder.addAnswer(question)">
+									<span class="glyphicon glyphicon-plus"></span>
+									Add Answer
+								</button>
+							</div>
+
+							<div class="alert alert-warning" role="alert" ng-if="question.invalid.answers">
+								<strong>Warning!</strong> {{ question.invalid.answers }}
+							</div>
+
+							<button type="button" class="btn btn-default" ng-if="!question.editing" ng-click="question.editing = true">
+								<span class="glyphicon glyphicon-pencil"></span>
+								Edit Question
+							</button>
+							<button type="button" class="btn btn-success" ng-if="question.editing" ng-click="builder.validateQuestion(question)">
+								<span class="glyphicon glyphicon-ok"></span>
+								Save Question
+							</button>
+							<hr>
 						</div>
 
-						<button type="button" class="btn btn-default btn-sm" ng-if="question.editing" ng-click="quiz.addAnswer(question)">
+						<button type="button" class="btn btn-default" ng-click="builder.addQuestion(builder.quiz.selected.questions)">
 							<span class="glyphicon glyphicon-plus"></span>
-							Add Answer
+							Add Question
+						</button>
+
+					</div>
+
+					<div class="panel-footer">
+						<button type="button" class="btn btn-danger" ng-click="builder.deleteQuiz()">
+							<span class="glyphicon glyphicon-trash"></span>
+							Delete Quiz
+						</button>
+						<button type="button" class="btn btn-success" ng-click="builder.saveQuiz()">
+							<span class="glyphicon glyphicon-floppy-saved"></span>
+							Save Quiz
 						</button>
 					</div>
-
-					<div class="alert alert-warning" role="alert" ng-if="question.invalid.answers">
-						<strong>Warning!</strong> {{ question.invalid.answers }}
-					</div>
-
-					<button type="button" class="btn btn-default" ng-if="!question.editing" ng-click="question.editing = true">
-						<span class="glyphicon glyphicon-pencil"></span>
-						Edit Question
-					</button>
-					<button type="button" class="btn btn-success" ng-if="question.editing" ng-click="quiz.validateQuestion(question)">
-						<span class="glyphicon glyphicon-ok"></span>
-						Save Question
-					</button>
-					<hr>
 				</div>
-
-				<button type="button" class="btn btn-default" ng-click="quiz.addQuestion(quiz.data.questions)">
-					<span class="glyphicon glyphicon-plus"></span>
-					Add Question
-				</button>
-
-			</div>
-
-			<div class="panel-footer">
-				<button type="button" class="btn btn-success" ng-click="saveQuiz()">
-					<span class="glyphicon glyphicon-floppy-saved"></span>
-					Save Quiz
-				</button>
 			</div>
 		</div>
+
 	</div>
 
 	<script src="js/libraries/angularjs/angular.min.js"></script>

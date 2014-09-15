@@ -6,6 +6,11 @@
 
 angular.module('QuizApp.services', [])
 
+	.value('quiz', {
+		all: [],
+		selected: null
+	})
+
 	.factory('validate', [function(){
 
 		var factory = {
