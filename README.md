@@ -1,4 +1,4 @@
-quiz-manager
+Quiz Manager
 ============
 
-Quiz manager app with angularjs and boostrap.
+Simple quiz manager app built with angularjs and bootstrap.

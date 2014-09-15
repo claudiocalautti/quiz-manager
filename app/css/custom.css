@@ -5,3 +5,9 @@
 .input-group {
 	margin-bottom: 10px;
 }
+.no-margin {
+	margin: 0;
+}
+.no-m-b {
+	margin-bottom: 0;
+}

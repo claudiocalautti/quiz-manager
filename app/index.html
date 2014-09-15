@@ -8,66 +8,103 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
 	<title>Quiz Manager</title>
 	<meta name="description" content="">
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/custom.css">
 	<!--[if lt IE 9]>
 		<script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
 	<![endif]-->
 </head>
 <body>
 
-	<div class="container">
+	<div class="container" ng-controller="quizCtrl as quiz">
 
 		<div class="page-header">
 			<h1><strong>Quiz Manager</strong></h1>
 		</div>
 
 		<div class="panel panel-primary">
-			<div class="panel-heading">
-				<h2>Quiz Name</h2>
+			<div class="panel-heading clearfix">
+				<h2 class="no-margin pull-left">{{ quiz.data.title }}</h2>
 			</div>
+
 			<div class="panel-body">
 
-				<div class="panel panel-invisible">
-					<input type="text" class="form-control" placeholder="Question...">
-					<div class="panel-body">
+				<div class="panel panel-invisible" ng-repeat="question in quiz.data.questions track by $index">
+					
+					<!-- question -->
+					<div class="input-group input-group-lg" ng-if="question.editing">
+						<span class="input-group-addon">
+							<strong>
+								Q:
+							</strong>
+						</span>
+						<input type="text" class="form-control" placeholder="Question..." ng-model="question.text">
+						<span class="input-group-btn">
+							<button class="btn btn-danger" type="button" ng-click="quiz.remove(quiz.data.questions, question)">
+								<span class="glyphicon glyphicon-remove"></span>
+								Remove
+							</button>
+						</span>
+					</div>
+					<div class="input-group input-group-lg" ng-if="!question.editing">
+						<strong>
+							Q:
+						</strong>
+						{{ question.text }}
+					</div>
+					<div class="alert alert-warning no-m-b" role="alert" ng-if="question.invalid.question">
+						<strong>Warning!</strong> {{ question.invalid.question }}
+					</div>
 
-						<div class="input-group">
+					<!-- answers -->
+					<div class="panel-body">
+						<div class="input-group" ng-if="question.editing" ng-repeat="answer in question.answers track by $index">
 							<span class="input-group-addon">
-								<input type="checkbox">
+								<input type="checkbox" ng-model="answer.correct">
 							</span>
-							<input type="text" class="form-control" placeholder="Answer...">
+							<input type="text" class="form-control" placeholder="Answer..." ng-model="answer.text">
 							<span class="input-group-btn">
-								<button class="btn btn-danger" type="button">
+								<button class="btn btn-danger" type="button" ng-click="quiz.remove(question.answers, answer)">
 									<span class="glyphicon glyphicon-remove"></span>
+									Remove
 								</button>
 							</span>
 						</div>
+						<div class="input-group" ng-if="!question.editing" ng-repeat="answer in question.answers track by $index">
+							<input type="radio" name="{{ question.id }}">
+							{{ answer.text }}
+						</div>
 
-						<button type="button" class="btn btn-default btn-sm">
+						<button type="button" class="btn btn-default btn-sm" ng-if="question.editing" ng-click="quiz.addAnswer(question)">
 							<span class="glyphicon glyphicon-plus"></span>
 							Add Answer
 						</button>
 					</div>
-					<button type="button" class="btn btn-success">
+
+					<div class="alert alert-warning" role="alert" ng-if="question.invalid.answers">
+						<strong>Warning!</strong> {{ question.invalid.answers }}
+					</div>
+
+					<button type="button" class="btn btn-default" ng-if="!question.editing" ng-click="question.editing = true">
+						<span class="glyphicon glyphicon-pencil"></span>
+						Edit Question
+					</button>
+					<button type="button" class="btn btn-success" ng-if="question.editing" ng-click="quiz.validateQuestion(question)">
 						<span class="glyphicon glyphicon-ok"></span>
 						Save Question
 					</button>
+					<hr>
 				</div>
-				<hr>
 
-				<button type="button" class="btn btn-default">
+				<button type="button" class="btn btn-default" ng-click="quiz.addQuestion(quiz.data.questions)">
 					<span class="glyphicon glyphicon-plus"></span>
 					Add Question
 				</button>
 
 			</div>
+
 			<div class="panel-footer">
-				<button type="button" class="btn btn-danger btn-lg">
-					<span class="glyphicon glyphicon-trash"></span>
-					Delete Quiz
-				</button>
-				<button type="button" class="btn btn-success btn-lg">
+				<button type="button" class="btn btn-success" ng-click="saveQuiz()">
 					<span class="glyphicon glyphicon-floppy-saved"></span>
 					Save Quiz
 				</button>
