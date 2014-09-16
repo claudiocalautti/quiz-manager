@@ -53,8 +53,6 @@ angular.module('QuizApp.controllers', [])
 				correct: false
 			}
 			question.answers.push(answer);
-
-			console.log(this.quiz);
 		}
 
 		this.remove = function (arr, item) {

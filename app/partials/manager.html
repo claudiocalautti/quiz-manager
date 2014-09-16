@@ -1,0 +1,26 @@
+<div class="panel panel-default" ng-controller="managerCtrl as manager">
+	<div class="panel-heading clearfix">
+		<h2 class="no-margin pull-left">Quizzes</h2>
+	</div>
+	<div class="panel-body">
+		<div class="input-group no-m-b">
+			<input type="text" class="form-control" placeholder="Quiz name..." ng-model="manager.quizTitle">
+			<span class="input-group-btn">
+				<button type="button" class="btn btn-primary" ng-click="manager.addQuiz()" ng-disabled="!manager.quizTitle">
+					<span class="glyphicon glyphicon-plus"></span>
+					New Quiz
+				</button>
+			</span>
+		</div>
+	</div>
+	<ul class="list-group">
+		<li class="list-group-item"
+			ng-repeat="quiz in manager.quiz.all"
+			ng-click="manager.setQuiz(quiz)"
+			ng-class="{ 'selected': quiz.id == manager.quiz.selected.id }"
+			>
+			{{ quiz.name }}
+			<span class="glyphicon glyphicon-list-alt pull-right"></span>
+		</li>
+	</ul>
+</div>

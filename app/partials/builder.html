@@ -1,0 +1,93 @@
+<div ng-controller="builderCtrl as builder">
+	<div class="panel panel-primary" ng-if="builder.quiz.selected">
+		<div class="panel-heading">
+			<h2 class="no-margin">{{ builder.quiz.selected.name }}</h2>
+		</div>
+
+		<div class="panel-body">
+			<div class="panel panel-invisible" ng-repeat="question in builder.quiz.selected.questions track by $index">
+				
+				<!-- question -->
+				<div class="input-group input-group-lg" ng-if="question.editing">
+					<span class="input-group-addon">
+						<strong>
+							Q:
+						</strong>
+					</span>
+					<input type="text" class="form-control" placeholder="Question..." ng-model="question.text">
+					<span class="input-group-btn">
+						<button class="btn btn-danger" type="button" ng-click="builder.remove(builder.quiz.selected.questions, question)">
+							<span class="glyphicon glyphicon-remove"></span>
+							Remove
+						</button>
+					</span>
+				</div>
+				<div class="input-group input-group-lg" ng-if="!question.editing">
+					<strong>
+						Q:
+					</strong>
+					{{ question.text }}
+				</div>
+				<div class="alert alert-warning no-m-b" role="alert" ng-if="question.invalid.question">
+					<strong>Warning!</strong> {{ question.invalid.question }}
+				</div>
+
+				<!-- answers -->
+				<div class="panel-body">
+					<div class="input-group" ng-if="question.editing" ng-repeat="answer in question.answers track by $index">
+						<span class="input-group-addon">
+							<input type="checkbox" ng-model="answer.correct">
+						</span>
+						<input type="text" class="form-control" placeholder="Answer..." ng-model="answer.text">
+						<span class="input-group-btn">
+							<button class="btn btn-danger" type="button" ng-click="builder.remove(question.answers, answer)">
+								<span class="glyphicon glyphicon-remove"></span>
+								Remove
+							</button>
+						</span>
+					</div>
+					<div class="input-group" ng-if="!question.editing" ng-repeat="answer in question.answers track by $index">
+						<input type="radio" name="{{ question.id }}">
+						{{ answer.text }}
+					</div>
+
+					<button type="button" class="btn btn-default btn-sm" ng-if="question.editing" ng-click="builder.addAnswer(question)">
+						<span class="glyphicon glyphicon-plus"></span>
+						Add Answer
+					</button>
+				</div>
+
+				<!-- warning and buttons -->
+				<div class="alert alert-warning" role="alert" ng-if="question.invalid.answers">
+					<strong>Warning!</strong> {{ question.invalid.answers }}
+				</div>
+				<button type="button" class="btn btn-default" ng-if="!question.editing" ng-click="question.editing = true">
+					<span class="glyphicon glyphicon-pencil"></span>
+					Edit Question
+				</button>
+				<button type="button" class="btn btn-success" ng-if="question.editing" ng-click="builder.validateQuestion(question)">
+					<span class="glyphicon glyphicon-ok"></span>
+					Save Question
+				</button>
+
+				<hr>
+			</div>
+
+			<button type="button" class="btn btn-default" ng-click="builder.addQuestion(builder.quiz.selected.questions)">
+				<span class="glyphicon glyphicon-plus"></span>
+				Add Question
+			</button>
+		</div>
+
+		<div class="panel-footer">
+			<button type="button" class="btn btn-danger" ng-click="builder.deleteQuiz()">
+				<span class="glyphicon glyphicon-trash"></span>
+				Delete Quiz
+			</button>
+			<button type="button" class="btn btn-success" ng-click="builder.saveQuiz()">
+				<span class="glyphicon glyphicon-floppy-saved"></span>
+				Save Quiz
+			</button>
+		</div>
+	</div>
+</div>
